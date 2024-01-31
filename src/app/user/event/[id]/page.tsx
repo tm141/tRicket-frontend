@@ -8,6 +8,8 @@ import Event from "@/app/services/event";
 import Modal from "react-modal";
 import Ticket from "@/app/services/ticket";
 import Transaction from "@/app/services/transaction";
+import User from "@/app/services/user";
+import { formatterIDR } from "@/app/lib/formatterIDR";
 
 export default function Page({ params }: { params: { id: number } }) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -18,7 +20,9 @@ export default function Page({ params }: { params: { id: number } }) {
     const [PromoReferralId, setPromoReferralId] = useState(null);
     const [referralCode, setReferralCode] = useState(null);
     const [usePoint, setUsePoint] = useState(false);
-    const [createdTransaction,setCreatedTransaction] = useState<Transaction |null>(null);
+    const [createdTransaction, setCreatedTransaction] = useState<Transaction | null>(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [useRegisterCoupon, setUseRegisterCoupon] = useState(false);
 
     function handleSelectedTicketId(e: any) {
         setSelectedTicketId(e.target.value);
@@ -44,7 +48,15 @@ export default function Page({ params }: { params: { id: number } }) {
         setUsePoint(e.target.value);
     }
 
+    function handleUseRegisterCoupon(e: any) {
+        setUseRegisterCoupon(e.target.value);
+    }
+
     function handleBuyTicket() {
+        if (selectedTicketAmount == null || selectedTicketId == null || selectedTicketAmount < 1) {
+            alert("Please input valid input");
+            return;
+        }
         fetch('http://localhost:3000/api/user/createTransaction', {
             method: 'POST',
             headers: {
@@ -57,6 +69,7 @@ export default function Page({ params }: { params: { id: number } }) {
                 promosDateId: PromoDateId,
                 promosReferralId: PromoReferralId,
                 referralCode: referralCode,
+                registerCoupon: useRegisterCoupon,
                 usePoints: usePoint,
             }),
         })
@@ -77,7 +90,7 @@ export default function Page({ params }: { params: { id: number } }) {
                     return;
                 }
                 return res.json();
-            }).then((data:Transaction) => {
+            }).then((data: Transaction) => {
                 setCreatedTransaction(data);
             }).catch((err) => {
                 console.log(err);
@@ -130,12 +143,52 @@ export default function Page({ params }: { params: { id: number } }) {
             })
     });
 
+    fetch(`http://localhost:3000/api/user/dashboard`, {
+        headers: {
+            Authorization: auth,
+        }
+    })
+        .then((res) => {
+            if (res.status === 401) {
+                alert("Unauthorized");
+                router.push('/user/login');
+                return;
+            }
+            if (res.status === 404) {
+                alert("Not found");
+                router.push('/user/dashboard');
+                return;
+            }
+            return res.json();
+        })
+        .then((data: User) => {
+            setUser(data);
+        }).catch((err) => {
+            console.log(err);
+        });
+
     let tempDate = null;
     if (event) {
         tempDate = new Date(event.showTime);
     }
 
-    if (!event) return <p>Loading...</p>
+    let registerCoupon = null;
+    if (user) {
+        // if(new Date(JSON.parse(user?.createdAt.toDateString())))const createdAt = new Date(JSON.parse(user?.createdAt));
+        const now = new Date();
+        const threeMonthsInMilliseconds = 3 * 30 * 24 * 60 * 60 * 1000; // Approximation
+        if (now.getTime() - new Date(user.createdAt.toString()).getTime() < threeMonthsInMilliseconds) {
+            registerCoupon = (
+                < div >
+                    <label>
+                        Use RegisterCoupon: <input type="checkbox" name="registerCoupon" onChange={handleUseRegisterCoupon} />
+                    </label>
+                </ div>
+            );
+        }
+    }
+
+    if (!event) return <div><Navbar type="user" loggedIn={false} /><p>Loading...</p></div>
 
     return (
         <div>
@@ -184,7 +237,7 @@ export default function Page({ params }: { params: { id: number } }) {
                                 <select name="ticketType" onChange={handleSelectedTicketId}>
                                     <option value="">Select a ticket</option>
                                     {event.tickets.map((ticket: Ticket) => (
-                                        <option key={ticket.id} value={ticket.id}>{ticket.name} : Price({ticket.price}) : Available({ticket.amount})</option>
+                                        <option key={ticket.id} value={ticket.id}>{ticket.name} : Price({formatterIDR(ticket.price)}) : Available({ticket.amount})</option>
                                     ))}
                                 </select>
                             </label>

@@ -4,7 +4,6 @@ import Transaction from "@/app/services/transaction";
 import { parseCookies } from "nookies";
 import '../../globals.css';
 import Navbar from "@/app/_components/navbar";
-import { formatterIDR } from "@/app/lib/formatterIDR";
 
 export default function Transactions() {
 
@@ -50,7 +49,7 @@ export default function Transactions() {
     // transactionsTickets TransactionsTickets[]
     return (
         <div>
-            <Navbar type="user" loggedIn={true} />
+            <Navbar type="organizer" loggedIn={true} />
             <div className="m-9 h-fit">
                 <h1 className="lg:text-6xl text-lg text-center my-9">Transactions</h1>
                 <div className="flex flex-col gap-5 p-5 mb-5">
@@ -58,7 +57,7 @@ export default function Transactions() {
                         <div key={transaction.id} className="border-b-2 border-black bg-teal-200 p-2 rounded-xl">
                             <p className="lg:text-xl">Id: {transaction.id}</p>
                             <p className="lg:text-xl">Created At: {new Date(transaction.createdAt).toDateString()}</p>
-                            <p className="lg:text-xl">Total: {formatterIDR(transaction.total)}</p>
+                            <p className="lg:text-xl">Total: {transaction.total}</p>
                             <a href={'/user/transaction/' + transaction.id} className="lg:text-xl text-blue-500">Detail</a>
                         </div>
                     ))}

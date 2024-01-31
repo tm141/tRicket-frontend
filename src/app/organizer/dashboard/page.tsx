@@ -8,7 +8,7 @@ import Navbar from "@/app/_components/navbar";
 import Event from "@/app/services/event";
 
 export default function Page({ params }: { params: { id: number } }) {
-    const [event, setEvent] = useState<Event[] | null>([]);
+    const [event, setEvent] = useState<Event[] | null>(null);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
@@ -87,9 +87,9 @@ export default function Page({ params }: { params: { id: number } }) {
 
 
     function handleSearch() {
-        let fetchUrl = `http://localhost:3000/api/user/events?page=${page}`
+        let fetchUrl = `http://localhost:3000/api/organizer/events?page=${page}`
         if (debouncedSearchTerm) {
-            fetchUrl = fetchUrl + `&searchTerm=${searchTerm}`
+            fetchUrl = fetchUrl + `&name=${searchTerm}`
         }
         if (startDate) {
             fetchUrl = fetchUrl + `&startDate=${startDate}`
@@ -105,7 +105,7 @@ export default function Page({ params }: { params: { id: number } }) {
         }).then((res) => {
             if (res.status === 401) {
                 alert("Unauthorized");
-                router.push('/user/login');
+                router.push('/organizer/login');
                 return;
             }
             return res.json();
@@ -117,10 +117,10 @@ export default function Page({ params }: { params: { id: number } }) {
             })
     }
 
-    const navbar = jwtToken == undefined ? <Navbar type="user" loggedIn={false} /> : <Navbar type="user" loggedIn={true} />
+
     if (!event) return (
         <div>
-            {navbar}
+            <Navbar type="organizer" loggedIn={true} />
             {/* implement advanced search bar */}
             <div className="m-9 h-fit">
                 <h1 className="lg:text-6xl text-lg text-center my-9">Events</h1>
@@ -135,14 +135,14 @@ export default function Page({ params }: { params: { id: number } }) {
 
     return (
         <div>
-            {navbar}
+            <Navbar type="organizer" loggedIn={true} />
             {/* implement advanced search bar */}
             <div className="m-9 h-fit">
                 <h1 className="lg:text-6xl text-lg text-center my-9">Events</h1>
                 <div className="flex">
                     <label>
                         <p>Event Name</p>
-                        <input type="text" className="border-2 border-black rounded-xl p-2 m-5" placeholder="Search" onChange={(e) => { handleSearchTermParam(e) }} />
+                        <input type="text" className="border-2 border-black rounded-xl p-2 m-5" placeholder="Search" onChange={(e)=>{handleSearchTermParam(e)}} />
                     </label>
                     <label>
                         <p>Start Date</p>
@@ -161,8 +161,7 @@ export default function Page({ params }: { params: { id: number } }) {
                             <p className="lg:text-xl">Description: {event.description}</p>
                             <p className="lg:text-xl">Location: {event.location}</p>
                             <p className="lg:text-xl">Show Time: {new Date(event.showTime).toDateString()}</p>
-                            <p className="lg:text-xl">Organizer: {event.organizer.name}</p>
-                            <a href={`/user/event/${event.id}`} className="lg:text-xl text-blue-500">View Event</a>
+                            <a href={`/organizer/dashboard/${event.id}`} className="lg:text-xl text-blue-500">View Event</a>
                         </div>
                     ))}
                 </div>

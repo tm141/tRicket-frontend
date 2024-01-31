@@ -6,12 +6,12 @@ import '../../../globals.css';
 import Navbar from "@/app/_components/navbar";
 import Transaction from "@/app/services/transaction";
 import TransactionTicket from "@/app/services/transactionTicket";
-import { formatterIDR } from "@/app/lib/formatterIDR";
 
 export default function Page({ params }: { params: { id: number } }) {
     const [transaction, setTransaction] = useState<Transaction | null>(null);
     const [transactionTickets, setTransactionTickets] = useState<TransactionTicket[] | null>(null);
 
+    const transactionId = params.id
     const cookies = parseCookies();
     const jwtToken = cookies.jwt;
     let auth = 'asdf';
@@ -21,7 +21,7 @@ export default function Page({ params }: { params: { id: number } }) {
     const router = useRouter();
 
     useEffect(() => {
-        fetch(`http://localhost:3000/api/user/transaction/latest`, {
+        fetch(`http://localhost:3000/api/user/transactions/${transactionId}`, {
             headers: {
                 Authorization: auth,
             }
@@ -45,9 +45,6 @@ export default function Page({ params }: { params: { id: number } }) {
                 console.log(err);
             })
     });
-
-
-    const transactionId = transaction?.id;
 
     useEffect(() => {
         fetch(`http://localhost:3000/api/user/transaction/${transactionId}/transactionTickets`, {
@@ -79,16 +76,15 @@ export default function Page({ params }: { params: { id: number } }) {
     if (transaction && transactionTickets) {
         return (
             <div>
-                <Navbar type="user" loggedIn={true} />
+                <Navbar type="organizer" loggedIn={true} />
                 {/* display transaction detail */}
                 <div className="m-9 h-fit">
-                    <h1 className="lg:text-8xl text-lg text-center my-9">Transaction Successful!</h1>
                     <h1 className="lg:text-6xl text-lg text-center my-9">Transaction Detail</h1>
                     <div className="bg-teal-200 p-5 mb-5 rounded-xl">
                         <div>
                             <p className="lg:text-xl">Id: {transaction.id}</p>
                             <p className="lg:text-xl">Created At: {new Date(transaction.createdAt).toDateString()}</p>
-                            <p className="lg:text-xl">Total: {formatterIDR(transaction.total)}</p>
+                            <p className="lg:text-xl">Total: {transaction.total}</p>
                         </div>
                     </div>
 
@@ -103,9 +99,9 @@ export default function Page({ params }: { params: { id: number } }) {
                                     <p className="lg:text-xl">Ticket Description: {transactionTicket.ticket.description}</p>
                                     <p className="lg:text-xl">Promo Date: {transactionTicket.promosDate?.name}</p>
                                     <p className="lg:text-xl">Promo Referral: {transactionTicket.promosReferral?.name}</p>
-                                    <p className="lg:text-xl">Ticket Price: {formatterIDR(transactionTicket.ticket.price)}</p>
+                                    <p className="lg:text-xl">Ticket Price: {transactionTicket.ticket.price}</p>
                                     <p className="lg:text-xl">Ticket Quantity: {transactionTicket.amount}</p>
-                                    <p className="lg:text-xl">Total Price: {formatterIDR(transactionTicket.total)}</p>
+                                    <p className="lg:text-xl">Total Price: {transactionTicket.total}</p>
                                 </div>
                             ))}
                         </div>

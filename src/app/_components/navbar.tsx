@@ -67,7 +67,8 @@ export default function Navbar({ type, loggedIn }: { type: 'user' | 'admin' | 'g
     } else if (type === 'organizer') {
         if (!loggedIn) {
             links = [
-                { label: 'Home', link: '/organizer/' },
+                { label: 'Organizer', link: '#' },
+                { label: 'Home', link: '/' },
                 { label: 'Login', link: '/organizer/login' },
                 { label: 'Register', link: '/organizer/register' },
             ];
@@ -81,13 +82,14 @@ export default function Navbar({ type, loggedIn }: { type: 'user' | 'admin' | 'g
             );
         } else {
             links = [
+                { label: 'Organizer', link: '#' },
                 { label: 'Dashboard', link: '/organizer/dashboard' },
-                { label: 'My Event', link: '/organizer/event' },
-                { label: 'Create Event', link: '/organizer/event/create' },
+                // { label: 'My Event', link: '/organizer/event' },
+                // { label: 'Create Event', link: '/organizer/event/create' },
             ];
             rightButton = (
                 <a
-                    href="/lib/logout"
+                    href="/lib/organizer/logout"
                     className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
                 >
                     Logout

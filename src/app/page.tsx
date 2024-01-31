@@ -24,7 +24,7 @@ export default function Page() {
                     <div className="text-center lg:w-2/3 w-full">
                         <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Find Your Perfect Event</h1>
                         <div className="flex justify-center">
-                            <button className="inline-flex text-white bg-teal-500 border-0 py-2 px-6 focus:outline-none hover:bg-teal-600 rounded text-lg">Browse Events</button>
+                            <a href="/event" className="inline-flex text-white bg-teal-500 border-0 py-2 px-6 focus:outline-none hover:bg-teal-600 rounded text-lg">Browse Events</a>
                         </div>
                     </div>
                 </div>

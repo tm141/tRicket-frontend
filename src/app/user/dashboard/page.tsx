@@ -7,6 +7,7 @@ import '../../globals.css';
 import Navbar from "@/app/_components/navbar";
 import { useRouter } from "next/navigation";
 import Head from "next/head";
+import { formatterIDR } from "@/app/lib/formatterIDR";
 
 
 export default function Dashboard() {
@@ -93,7 +94,7 @@ export default function Dashboard() {
                         {data?.transactions.map((transaction) => (
                             <div className="border-b-2 border-black" key={transaction.id}>
                                 {/* <p>Payment Type: {tempPaymentType[transaction.paymentTypeId]}</p> */}
-                                <p>Total: {transaction.total}</p>
+                                <p>Total: {formatterIDR(transaction.total)}</p>
                                 {/* <p>Status: {transaction.status}</p> */}
                                 <p>Created At: {new Date(transaction.createdAt).toDateString()}</p>
                             </div>

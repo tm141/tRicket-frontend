@@ -6,6 +6,7 @@ import '../../../globals.css';
 import Navbar from "@/app/_components/navbar";
 import Transaction from "@/app/services/transaction";
 import TransactionTicket from "@/app/services/transactionTicket";
+import { formatterIDR } from "@/app/lib/formatterIDR";
 
 export default function Page({ params }: { params: { id: number } }) {
     const [transaction, setTransaction] = useState<Transaction | null>(null);
@@ -84,7 +85,7 @@ export default function Page({ params }: { params: { id: number } }) {
                         <div>
                             <p className="lg:text-xl">Id: {transaction.id}</p>
                             <p className="lg:text-xl">Created At: {new Date(transaction.createdAt).toDateString()}</p>
-                            <p className="lg:text-xl">Total: {transaction.total}</p>
+                            <p className="lg:text-xl">Total: {formatterIDR(transaction.total)}</p>
                         </div>
                     </div>
 
@@ -99,9 +100,9 @@ export default function Page({ params }: { params: { id: number } }) {
                                     <p className="lg:text-xl">Ticket Description: {transactionTicket.ticket.description}</p>
                                     <p className="lg:text-xl">Promo Date: {transactionTicket.promosDate?.name}</p>
                                     <p className="lg:text-xl">Promo Referral: {transactionTicket.promosReferral?.name}</p>
-                                    <p className="lg:text-xl">Ticket Price: {transactionTicket.ticket.price}</p>
+                                    <p className="lg:text-xl">Ticket Price: {formatterIDR(transactionTicket.ticket.price)}</p>
                                     <p className="lg:text-xl">Ticket Quantity: {transactionTicket.amount}</p>
-                                    <p className="lg:text-xl">Total Price: {transactionTicket.total}</p>
+                                    <p className="lg:text-xl">Total Price: {formatterIDR(transactionTicket.total)}</p>
                                 </div>
                             ))}
                         </div>

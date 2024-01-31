@@ -16,7 +16,7 @@ export default function Event() {
             })
     }, []);
 
-    if (isLoading) return <p>Loading...</p>
+    if (isLoading) return <div><p>Loading...</p></div>
     if (!data) return <p>No Event data</p>
     console.log(data);
     return (
